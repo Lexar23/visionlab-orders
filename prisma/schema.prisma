@@ -20,6 +20,7 @@ model tenants {
 model Order {
   id           String    @id @default(uuid())
   orderNumber  String
+  patientName  String?
   branch       String
   invoice      String
   startDate    DateTime

@@ -86,6 +86,9 @@ export const OrderCard = ({ order, onUpdateObservations, onDelete, onUpdateStatu
                     <div className="flex flex-col min-w-0">
                         <span className="text-[10px] font-black uppercase tracking-tight text-gray-400 leading-none mb-1">Orden</span>
                         <span className="text-base md:text-lg font-black tracking-tight leading-none text-gray-900 truncate">#{order.orderNumber}</span>
+                        {order.patientName && (
+                            <span className="text-xs font-bold text-gray-500 truncate mt-0.5">{order.patientName}</span>
+                        )}
                     </div>
                 </div>
 

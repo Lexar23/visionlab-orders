@@ -7,6 +7,7 @@ import { OrderStatus } from "@/constants/status";
 
 const OrderCreateSchema = z.object({
     orderNumber: z.string().trim().min(1).max(64),
+    patientName: z.string().trim().max(128).optional(),
     branch: z.string().trim().min(1).max(128),
     invoice: z.string().trim().min(1).max(128),
     startDate: z.string().trim().min(1),
@@ -35,6 +36,7 @@ export async function POST(req: Request) {
             data: {
                 id: randomUUID(),
                 orderNumber: body.data.orderNumber,
+                patientName: body.data.patientName || null,
                 branch: body.data.branch,
                 invoice: body.data.invoice,
                 startDate: new Date(body.data.startDate),
@@ -43,6 +45,7 @@ export async function POST(req: Request) {
             select: {
                 id: true,
                 orderNumber: true,
+                patientName: true,
                 branch: true,
                 invoice: true,
                 startDate: true,
@@ -76,6 +79,7 @@ export async function GET(req: Request) {
             select: {
                 id: true,
                 orderNumber: true,
+                patientName: true,
                 branch: true,
                 invoice: true,
                 startDate: true,

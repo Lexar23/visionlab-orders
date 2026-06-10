@@ -24,6 +24,7 @@ export default function EntryPage() {
     // Form states
     const [orderData, setOrderData] = useState({
         orderNumber: '',
+        patientName: '',
         branch: '',
         invoice: '',
         startDate: new Date().toISOString().split('T')[0],
@@ -138,6 +139,21 @@ export default function EntryPage() {
                                         value={orderData.orderNumber}
                                         onChange={(e) => setOrderData({ ...orderData, orderNumber: e.target.value })}
                                         placeholder="Ej. 25489"
+                                        className="w-full h-14 md:h-16 px-6 bg-gray-50 border-0 rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all text-base md:text-lg font-bold text-black placeholder:text-black/30"
+                                    />
+                                </div>
+
+                                <div className="space-y-3">
+                                    <label className="flex items-center gap-2 text-sm font-black text-black ml-1">
+                                        <Package className="h-4 w-4 opacity-40 text-black" />
+                                        Nombre del Paciente
+                                    </label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={orderData.patientName}
+                                        onChange={(e) => setOrderData({ ...orderData, patientName: e.target.value })}
+                                        placeholder="Ej. Juan Pérez"
                                         className="w-full h-14 md:h-16 px-6 bg-gray-50 border-0 rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all text-base md:text-lg font-bold text-black placeholder:text-black/30"
                                     />
                                 </div>

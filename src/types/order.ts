@@ -4,6 +4,7 @@ import { OrderStatus } from "@/constants/status";
 export interface Order {
     id: string;
     orderNumber: string;
+    patientName?: string | null;
     branch: string;
     invoice: string;
     startDate: string; // ISO Date

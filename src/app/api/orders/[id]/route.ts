@@ -51,6 +51,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
             select: {
                 id: true,
                 orderNumber: true,
+                patientName: true,
                 branch: true,
                 invoice: true,
                 startDate: true,
