@@ -1,0 +1,59 @@
+
+> order_tracker@0.1.0 lint
+> next lint
+
+
+./src/app/api/orders/%5Bid%5D/route.ts
+9:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+22:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/api/orders/route.ts
+22:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+34:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/api/orders/[id]/route.ts
+10:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+27:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/api/settings/route.ts
+18:14  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+33:46  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+58:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/api/tasks/%5Bid%5D/route.ts
+9:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+22:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/api/tasks/route.ts
+20:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+32:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/api/tasks/[id]/route.ts
+10:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+27:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/ingreso/page.tsx
+76:18  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/status/[slug]/page.tsx
+33:82  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/orders/OrderCard.tsx
+17:23  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/features/auth/LoginForm.tsx
+8:10  Error: 'cn' is defined but never used.  @typescript-eslint/no-unused-vars
+35:18  Error: 'err' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/features/dashboard/DashboardPage.tsx
+97:18  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+112:22  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+127:22  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+149:18  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/features/status/StatusPageFeature.tsx
+9:39  Error: 'LayoutGrid' is defined but never used.  @typescript-eslint/no-unused-vars
+9:51  Error: 'List' is defined but never used.  @typescript-eslint/no-unused-vars
+43:18  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules

@@ -1,0 +1,22 @@
+
+> order_tracker@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.12
+   - Environments: .env
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./src/app/api/orders/%5Bid%5D/route.ts
+Module not found: Can't resolve '@/lib/db'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/app/api/tasks/%5Bid%5D/route.ts
+Module not found: Can't resolve '@/lib/db'
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+> Build failed because of webpack errors
