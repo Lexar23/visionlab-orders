@@ -24,13 +24,15 @@ const StatusSection = ({
     orders, 
     onDeleteOrder, 
     onUpdateObservations, 
-    onUpdateStatus 
+    onUpdateStatus,
+    onToggleUrgent
 }: { 
     status: OrderStatus, 
     orders: Order[], 
     onDeleteOrder: (id: string) => void,
     onUpdateObservations: (id: string, obs: string) => Promise<boolean | void>,
-    onUpdateStatus: (id: string, newStatus: OrderStatus) => Promise<void>
+    onUpdateStatus: (id: string, newStatus: OrderStatus) => Promise<void>,
+    onToggleUrgent: (id: string, currentUrgency: boolean) => Promise<void>
 }) => {
     const [isOpen, setIsOpen] = useState(true);
 
@@ -82,6 +84,7 @@ const StatusSection = ({
                                                         onDelete={onDeleteOrder}
                                                         onUpdateObservations={onUpdateObservations}
                                                         onUpdateStatus={onUpdateStatus}
+                                                        onToggleUrgent={onToggleUrgent}
                                                         dragHandleProps={provided.dragHandleProps}
                                                     />
                                                 </div>
@@ -106,7 +109,13 @@ export const DashboardPage = () => {
 
     const ordersByStatus = useMemo(() => {
         const grouped: Partial<Record<OrderStatus, Order[]>> = {};
-        for (const order of orders) {
+        const sortedOrders = [...orders].sort((a, b) => {
+            if (a.isUrgent && !b.isUrgent) return -1;
+            if (!a.isUrgent && b.isUrgent) return 1;
+            return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+        });
+        
+        for (const order of sortedOrders) {
             (grouped[order.status] ||= []).push(order);
         }
         return grouped;
@@ -217,6 +226,27 @@ export const DashboardPage = () => {
         }
     };
 
+    const handleToggleUrgent = async (id: string, currentUrgency: boolean) => {
+        const previousOrders = [...orders];
+        setOrders(prev => prev.map(o => o.id === id ? { ...o, isUrgent: !currentUrgency } : o));
+
+        try {
+            const response = await fetch(`/api/orders/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ isUrgent: !currentUrgency })
+            });
+
+            if (!response.ok) {
+                setOrders(previousOrders);
+                alert("Error al actualizar urgencia");
+            }
+        } catch (error) {
+            setOrders(previousOrders);
+            alert("Error de conexión");
+        }
+    };
+
     const handleUpdateObservations = async (id: string, observations: string) => {
         try {
             const response = await fetch(`/api/orders/${id}`, {
@@ -248,7 +278,7 @@ export const DashboardPage = () => {
     }
 
     const stats = [
-        { label: 'Total Activas', value: orders.length, icon: Layers, color: 'text-blue-600', bg: 'bg-blue-50' },
+        { label: 'Total Activas', value: orders.filter(o => o.status !== OrderStatus.DELIVERED).length, icon: Layers, color: 'text-blue-600', bg: 'bg-blue-50' },
         { label: 'En Producción', value: orders.filter(o => o.status === OrderStatus.PRODUCTION).length, icon: TrendingUp, color: 'text-amber-600', bg: 'bg-amber-50' },
         { label: 'Retrabajos', value: orders.filter(o => o.status === OrderStatus.REWORKS).length, icon: AlertCircle, color: 'text-red-600', bg: 'bg-red-50' },
         { label: 'Tareas', value: tasks.length, icon: ListTodo, color: 'text-purple-600', bg: 'bg-purple-50' },
@@ -294,6 +324,7 @@ export const DashboardPage = () => {
                                     onDeleteOrder={handleDeleteOrder}
                                     onUpdateObservations={handleUpdateObservations}
                                     onUpdateStatus={handleUpdateStatus}
+                                    onToggleUrgent={handleToggleUrgent}
                                 />
                             ))}
                         </section>

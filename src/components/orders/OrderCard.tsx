@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { Order } from '@/types/order';
 import { cn } from '@/lib/utils';
-import { Save, Calendar, Landmark, ReceiptText, Trash2, ChevronDown, ChevronUp, GripVertical, ArrowRightCircle } from 'lucide-react';
+import { Save, Calendar, Landmark, ReceiptText, Trash2, ChevronDown, ChevronUp, GripVertical, ArrowRightCircle, Flame } from 'lucide-react';
 import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ALLOWED_TRANSITIONS, OrderStatus, STATUS_LABELS } from '@/constants/status';
@@ -15,10 +15,11 @@ interface OrderCardProps {
     onUpdateObservations?: (id: string, obs: string) => Promise<boolean | void>;
     onDelete?: (id: string) => void;
     onUpdateStatus?: (id: string, newStatus: OrderStatus) => Promise<void>;
+    onToggleUrgent?: (id: string, currentUrgency: boolean) => Promise<void>;
     dragHandleProps?: DraggableProvidedDragHandleProps | null;
 }
 
-export const OrderCard = ({ order, onUpdateObservations, onDelete, onUpdateStatus, dragHandleProps }: OrderCardProps) => {
+export const OrderCard = ({ order, onUpdateObservations, onDelete, onUpdateStatus, onToggleUrgent, dragHandleProps }: OrderCardProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [observations, setObservations] = useState(order.observations || '');
     const [isSaving, setIsSaving] = useState(false);
@@ -71,6 +72,7 @@ export const OrderCard = ({ order, onUpdateObservations, onDelete, onUpdateStatu
         <div
             className={cn(
                 "group relative overflow-hidden rounded-2xl border bg-white transition-all duration-300 shadow-sm hover:shadow-md",
+                order.isUrgent ? "border-red-500 ring-1 ring-red-500" : "",
                 isExpanded ? "ring-2 ring-blue-100" : ""
             )}
         >
@@ -88,6 +90,11 @@ export const OrderCard = ({ order, onUpdateObservations, onDelete, onUpdateStatu
                         <span className="text-base md:text-lg font-black tracking-tight leading-none text-gray-900 truncate">#{order.orderNumber}</span>
                         {order.patientName && (
                             <span className="text-xs font-bold text-gray-500 truncate mt-0.5">{order.patientName}</span>
+                        )}
+                        {order.isUrgent && (
+                            <span className="text-[10px] font-black text-red-500 uppercase flex items-center gap-1 mt-1">
+                                <Flame className="h-3 w-3" /> Urgente
+                            </span>
                         )}
                     </div>
                 </div>
@@ -159,19 +166,36 @@ export const OrderCard = ({ order, onUpdateObservations, onDelete, onUpdateStatu
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
                                     <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Observaciones</span>
-                                    <button
-                                        onClick={handleDelete}
-                                        className="flex items-center gap-1.5 text-[10px] font-black text-red-400 hover:text-red-600 uppercase tracking-widest"
-                                    >
-                                        <Trash2 className="h-3.5 w-3.5" />
-                                        Eliminar Orden
-                                    </button>
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onToggleUrgent?.(order.id, order.isUrgent || false);
+                                            }}
+                                            className={cn(
+                                                "flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-colors",
+                                                order.isUrgent ? "text-red-600 hover:text-red-700" : "text-gray-400 hover:text-red-500"
+                                            )}
+                                        >
+                                            <Flame className={cn("h-3.5 w-3.5", order.isUrgent ? "fill-red-600" : "")} />
+                                            {order.isUrgent ? "Quitar Urgencia" : "Marcar Urgente"}
+                                        </button>
+                                        <button
+                                            onClick={handleDelete}
+                                            className="flex items-center gap-1.5 text-[10px] font-black text-red-400 hover:text-red-600 uppercase tracking-widest"
+                                        >
+                                            <Trash2 className="h-3.5 w-3.5" />
+                                            Eliminar Orden
+                                        </button>
+                                    </div>
                                 </div>
                                 <textarea
                                     value={observations}
                                     onClick={(e) => e.stopPropagation()}
+                                    onKeyDown={(e) => e.stopPropagation()}
+                                    onPointerDown={(e) => e.stopPropagation()}
                                     onChange={(e) => setObservations(e.target.value)}
-                                    className="w-full min-h-[100px] rounded-2xl border-0 bg-white p-4 text-sm font-medium shadow-sm ring-1 ring-black/5 focus:ring-2 focus:ring-blue-100 transition-all resize-none"
+                                    className="w-full min-h-[100px] rounded-2xl border-0 bg-white text-black p-4 text-sm font-bold shadow-sm ring-1 ring-black/5 focus:ring-2 focus:ring-blue-100 transition-all resize-none"
                                     placeholder="Añadir notas internas..."
                                 />
                                 <button

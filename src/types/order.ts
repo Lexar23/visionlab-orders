@@ -11,6 +11,7 @@ export interface Order {
     status: OrderStatus;
     observations: string;
     deliveredAt?: string; // ISO Date
+    isUrgent: boolean;
     createdAt: string;
     updatedAt: string;
 }

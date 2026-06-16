@@ -27,6 +27,7 @@ model Order {
   status       String    @default("PENDIENTE")
   observations String?
   deliveredAt  DateTime?
+  isUrgent     Boolean   @default(false)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 

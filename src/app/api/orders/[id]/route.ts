@@ -7,6 +7,7 @@ import { OrderStatus } from "@/constants/status";
 const OrderPatchSchema = z.object({
     status: z.nativeEnum(OrderStatus).optional(),
     observations: z.string().trim().max(2000).optional(),
+    isUrgent: z.boolean().optional(),
 }).strict();
 
 function toErrorMessage(err: unknown) {
@@ -45,6 +46,10 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
             updateData.observations = body.data.observations;
         }
 
+        if (typeof body.data.isUrgent === "boolean") {
+            updateData.isUrgent = body.data.isUrgent;
+        }
+
         const updated = await prisma.order.update({
             where: { id },
             data: updateData,
@@ -58,6 +63,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
                 status: true,
                 observations: true,
                 deliveredAt: true,
+                isUrgent: true,
                 createdAt: true,
                 updatedAt: true,
             },
