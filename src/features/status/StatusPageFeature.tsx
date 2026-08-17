@@ -18,6 +18,7 @@ interface StatusPageProps {
 export const StatusPageFeature = ({ status, initialOrders }: StatusPageProps) => {
     const isDelivered = status === OrderStatus.DELIVERED;
     const [orders, setOrders] = useState<Order[]>(initialOrders);
+    const [searchQuery, setSearchQuery] = useState('');
 
     // Update if props change
     useEffect(() => {
@@ -46,6 +47,17 @@ export const StatusPageFeature = ({ status, initialOrders }: StatusPageProps) =>
         }
     };
 
+    const filteredOrders = orders.filter(order => {
+        if (!searchQuery) return true;
+        const query = searchQuery.toLowerCase();
+        return (
+            order.orderNumber.toLowerCase().includes(query) ||
+            order.branch.toLowerCase().includes(query) ||
+            order.patientName?.toLowerCase().includes(query) ||
+            order.invoice.toLowerCase().includes(query)
+        );
+    });
+
     return (
         <main className="min-h-screen bg-[#fcfcfd] pb-20">
             <div className="mx-auto max-w-[1400px] px-6 lg:px-12 py-10">
@@ -73,6 +85,8 @@ export const StatusPageFeature = ({ status, initialOrders }: StatusPageProps) =>
                             <input
                                 type="text"
                                 placeholder="Buscar por orden..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                                 className="h-12 w-64 pl-12 pr-4 bg-transparent border-0 rounded-xl focus:ring-2 focus:ring-blue-100 font-medium transition-all"
                             />
                         </div>
@@ -84,8 +98,8 @@ export const StatusPageFeature = ({ status, initialOrders }: StatusPageProps) =>
 
                 {/* Grid Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-                    {orders.length > 0 ? (
-                        orders.map(order => (
+                    {filteredOrders.length > 0 ? (
+                        filteredOrders.map(order => (
                             <div key={order.id} className="relative group">
                                 {isDelivered && (
                                     <div className="absolute -top-2.5 left-4 z-10 px-2.5 py-0.5 rounded-md bg-green-100 border border-green-200 text-green-700 text-[9px] font-black uppercase tracking-widest shadow-sm">

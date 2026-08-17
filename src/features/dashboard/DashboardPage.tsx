@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import {
     Plus, ListTodo, Layers, Timer, Trash2,
-    AlertCircle, TrendingUp, Loader2, ChevronDown, ChevronUp
+    AlertCircle, TrendingUp, Loader2, ChevronDown, ChevronUp, CheckCircle2
 } from 'lucide-react';
 import {
     DragDropContext,
@@ -106,6 +106,7 @@ export const DashboardPage = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [tasks, setTasks] = useState<Task[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [expandedTasks, setExpandedTasks] = useState<Set<string>>(new Set());
 
     const ordersByStatus = useMemo(() => {
         const grouped: Partial<Record<OrderStatus, Order[]>> = {};
@@ -339,15 +340,41 @@ export const DashboardPage = () => {
                                 {tasks.map(task => (
                                     <div key={task.id} className="group flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 transition-all hover:shadow-md">
                                         <div className="flex items-center gap-4 pr-4">
-                                            <button
-                                                onClick={() => handleDeleteTask(task.id)}
-                                                className="opacity-0 group-hover:opacity-100 h-8 w-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 transition-all hover:bg-red-100"
+                                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                                                <button
+                                                    onClick={() => {
+                                                        if (window.confirm('¿Marcar tarea como realizada?')) {
+                                                            handleDeleteTask(task.id);
+                                                        }
+                                                    }}
+                                                    className="h-8 w-8 flex items-center justify-center rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-all"
+                                                    title="Marcar como realizado"
+                                                >
+                                                    <CheckCircle2 className="h-5 w-5" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteTask(task.id)}
+                                                    className="h-8 w-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-all"
+                                                    title="Eliminar tarea"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                            <div 
+                                                className="flex flex-col gap-1 cursor-pointer" 
+                                                onClick={() => {
+                                                    setExpandedTasks(prev => {
+                                                        const next = new Set(prev);
+                                                        if (next.has(task.id)) next.delete(task.id);
+                                                        else next.add(task.id);
+                                                        return next;
+                                                    });
+                                                }}
                                             >
-                                                <Trash2 className="h-4 w-4" />
-                                            </button>
-                                            <div className="flex flex-col gap-1">
                                                 <span className="text-[10px] font-black uppercase tracking-wider text-purple-600">{task.owner || 'Tarea'}</span>
-                                                <span className="font-bold text-gray-800 line-clamp-2">{task.description}</span>
+                                                <span className={cn("font-bold text-gray-800 transition-all", !expandedTasks.has(task.id) && "line-clamp-2")}>
+                                                    {task.description}
+                                                </span>
                                             </div>
                                         </div>
                                         <div className="flex flex-col items-center justify-center min-w-[70px] rounded-xl bg-purple-50 p-2 text-purple-700 ring-1 ring-purple-100">
